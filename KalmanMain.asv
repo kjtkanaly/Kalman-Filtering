@@ -40,9 +40,9 @@ alpha = 0.9;    % High Precision Radars use a high alpha (close to 1)
 beta  = 0.9;    % High Precision Radars use a high beta  (close to 1)
 
 % Making the Data
-Time = 0:1:50;
+Time = 0:0.5:20;
 
-Truth.Velocity      = 40;
+Truth.Velocity      = 100;
 Truth.InitPosition  = 30e3;
 Truth.Postion       = zeros(size(Time,2), 1);
 
@@ -50,15 +50,14 @@ for i = 1:size(Time,2)
     Truth.Postion(i) = Truth.Velocity * Time(i) + Truth.InitPosition;
 end
 
-NoiseScale          = 400;
-Measured.Positon    = Truth.Postion + NoiseScale.*(rand(size(Time, 2), 1) - 0.5);
+Measured.Positon = Truth.Postion + 10.*(rand(size(Time, 2), 1) - 0.5);
 
-
+Estimate = 1;
 
 figure;
 hold on;
-plot(Time, Truth.Postion,'LineWidth', 1.5,'LineStyle', '--')
-plot(Time, Measured.Positon, 'LineWidth', 1.5)
+plot(Time, Truth.Postion,'LineWidth',1.5,'LineStyle','--')
+plot(Time, Measured.Positon, 'LIn')
 hold off;
 grid on;
 xlabel('Time (s)')
@@ -66,7 +65,7 @@ ylabel('Position (m)')
 legend("Truth", "Measured");
 ax = gca;
 ax.FontSize = 14;
-ylim([Truth.InitPosition Truth.Postion(end)])
+
 
 
 
