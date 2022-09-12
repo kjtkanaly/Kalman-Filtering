@@ -10,7 +10,7 @@ clear all;
 
 % Mode: 0 - State Update Equation
 % Mode: 1 - Alpha-Beta Filter
-Mode = 0;
+Mode = 1;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Making the Data
