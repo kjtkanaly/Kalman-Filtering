@@ -1,0 +1,10 @@
+Truth.Velocity      = 0;
+Truth.InitPosition  = 30e3;
+Truth.Postion       = zeros(size(Time,2), 1);
+
+for i = 1:size(Time,2)
+    Truth.Postion(i) = Truth.Velocity * Time(i) + Truth.InitPosition;
+end
+
+NoiseScale          = 400;
+Measured.Positon    = Truth.Postion + NoiseScale.*(rand(size(Time, 2), 1) - 0.5);
