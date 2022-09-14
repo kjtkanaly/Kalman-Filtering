@@ -19,30 +19,36 @@ Time        = 5:deltaTime:50;
 
 Truth.Velocity      = 0;
 Truth.InitPosition  = 50; %30e3;
-Truth.Postion       = zeros(size(Time,2), 1);
+Truth.Postion       = [50.479, 51.025, 51.5, 52.003, 52.494, 53.002, 53.499, 54.006, 54.498, 54.991];
+Truth.ProcessNoise  = 0.15;
 
-for i = 1:size(Time,2)
-    Truth.Postion(i) = Truth.Velocity * Time(i) + Truth.InitPosition;
-end
+% Truth.Postion       = zeros(size(Time,2), 1);
+% for i = 1:size(Time,2)
+%     Truth.Postion(i) = Truth.Velocity * Time(i) + Truth.InitPosition;
+% end
 
 NoiseScale          = 10;
-Measured.Positon    = Truth.Postion + NoiseScale.*(rand(size(Time, 2), 1) - 0.5);
-Measured.Positon    = [48.54, 47.11, 55.01, 55.15, 49.89, 40.85, 46.72, 50.05, 51.27, 49.95]; % <- Kalman Building Height Test Case
+Measured.Positon    = [50.45, 50.967, 51.6, 52.106, 52.492, 52.819, 53.433, 54.007, 54.523, 54.99];
 
+% Measured.Positon    = Truth.Postion + NoiseScale.*(rand(size(Time, 2), 1) - 0.5);
+
+%%%%%%%%%%%%%%%%
 % State Update
 StateUpdateEquation(Measured.Positon, Truth, Time);
 
+%%%%%%%%%%%%%%%%
 % Alpah-Beta
 alpha = 0.2;    % High Precision Radars use a high alpha (close to 1)
 beta  = 0.2;    % High Precision Radars use a high beta  (close to 1)
 
 Estimate = AlphaBeta(alpha, beta, Measured.Positon, Truth, Time);
 
+%%%%%%%%%%%%%%%%
 % Kalman
-Initial.EstimateValue = 60;
-Initial.EstimateError = 15^2;
+Initial.EstimateValue = 10; %60;
+Initial.EstimateError = 100^2; %15^2;
 
-Measured.Error = 5^2;
+Measured.Error = 0.1^2;
 
 Kalman(Measured, Truth, Time, Initial);
 
@@ -52,7 +58,7 @@ function [Estimate] = Kalman(Measured, Truth, Time, Initial)
 
     % Initialize 
     Prediction.EstimateValue = Initial.EstimateValue;
-    Prediction.EstimateError = Initial.EstimateError;
+    Prediction.EstimateError = Initial.EstimateError + Truth.ProcessNoise;
 
     % Iterative Estimates
     Estimate.Value = zeros(size(Time, 2), 1);
@@ -73,7 +79,7 @@ function [Estimate] = Kalman(Measured, Truth, Time, Initial)
 
         % STEP 2 - PREDICT
         Prediction.EstimateValue = Estimate.Value(n);
-        Prediction.EstimateError = Estimate.Error(n);
+        Prediction.EstimateError = Estimate.Error(n) + Truth.ProcessNoise;
 
     end
 
