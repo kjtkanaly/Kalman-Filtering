@@ -89,7 +89,7 @@ function [Estimate] = Kalman(Measured, Truth, Time, Initial)
     grid on;
     xlabel('Time (s)')
     ylabel('Position (m)')
-    title('$\alpha$ - $\beta$ Filter', 'Interpreter','latex')
+    title('Kalman Filter: Estimate Value', 'Interpreter','latex')
     leg = legend("Truth", "Measured", "Estimate");
     leg.Location = 'northwest';
     ax = gca;
@@ -99,6 +99,21 @@ function [Estimate] = Kalman(Measured, Truth, Time, Initial)
     else
         ylim([(Truth.InitPosition - 10) (Truth.InitPosition + 10)])
     end
+
+    figure;
+    hold on;
+    plot(Time, ones(size(Time, 2),1) .* Measured.Error, 'LineWidth', 2, 'LineStyle', '--')
+    plot(Time, Estimate.Error, 'LineWidth', 2)
+    hold off;
+    grid on;
+    xlabel('Time (s)')
+    ylabel('Uncertainty')
+    title('Kalman Filter: Estimate Uncertainties', 'Interpreter','latex')
+    leg = legend("Measurement Error", "Estimate Uncertainty");
+    leg.Location = 'northwest';
+    ax = gca;
+    ax.FontSize = 14;
+    ylim([0 Measured.Error + 5])
 
 end
 
